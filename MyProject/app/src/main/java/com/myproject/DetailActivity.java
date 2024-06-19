@@ -60,6 +60,7 @@ public class DetailActivity extends AppCompatActivity {
         email.setText(info.email);
         username.setText(info.username);
         password.setText(info.password);
+        image.setImageBitmap(RegisterActivity.getBitmap(info.image));
     }
 
     @Override

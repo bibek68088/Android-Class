@@ -71,6 +71,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 //            info.address = cursor.getString(cursor.getColumnIndex("address"));
             info.firstname = cursor.getString(cursor.getColumnIndex("firstname"));
             info.lastname = cursor.getString(cursor.getColumnIndex("lastname"));
+            info.image = cursor.getBlob(cursor.getColumnIndex("image"));
             list.add(info);
         }
         return list;
@@ -88,6 +89,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             info.password = cursor.getString(cursor.getColumnIndex("password"));
             info.email = cursor.getString(cursor.getColumnIndex("email"));
 //            info.address = cursor.getString(cursor.getColumnIndex("address"));
+            info.image = cursor.getBlob(cursor.getColumnIndex("image"));
             info.firstname = cursor.getString(cursor.getColumnIndex("firstname"));
             info.lastname = cursor.getString(cursor.getColumnIndex("lastname"));
         }

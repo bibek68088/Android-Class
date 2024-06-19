@@ -2,23 +2,30 @@ package com.myproject;
 
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.util.Patterns;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
+import java.io.ByteArrayOutputStream;
 import java.util.regex.Matcher;
 
 public class RegisterActivity extends AppCompatActivity {
     EditText firstname, lastname, username, email, password, confirmpassword;
     SharedPreferences sharedPreferences;
 
+    ImageView imageView;
     DatabaseHelper databaseHelper;
     int id;
     Button register;
@@ -28,7 +35,7 @@ public class RegisterActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.register_layout);
 
-        id = getIntent().getIntExtra("id",0);
+        id = getIntent().getIntExtra("id", 0);
         sharedPreferences = getSharedPreferences("Userinfo", Context.MODE_PRIVATE);
         databaseHelper = new DatabaseHelper(this);
         firstname = findViewById(R.id.first_name);
@@ -38,8 +45,9 @@ public class RegisterActivity extends AppCompatActivity {
         password = findViewById(R.id.password);
         confirmpassword = findViewById(R.id.confirm_password);
         register = findViewById(R.id.register);
-        if(id!=0){
-            Userinfo info = databaseHelper.getUserInfo(id+"");
+        imageView = findViewById(R.id.image);
+        if (id != 0) {
+            Userinfo info = databaseHelper.getUserInfo(id + "");
             firstname.setText(info.firstname);
             lastname.setText(info.lastname);
             username.setText(info.username);
@@ -73,11 +81,12 @@ public class RegisterActivity extends AppCompatActivity {
                     contentValues.put("firstname", firstnameValue);
                     contentValues.put("lastname", lastnameValue);
                     contentValues.put("email", email.getText().toString());
-                    if(id==0) {
+                    contentValues.put("image", getbyteArray(bitmap));
+                    if (id == 0) {
                         databaseHelper.insertUser(contentValues);
 
-                    }else{
-                        databaseHelper.updateUser(contentValues,String.valueOf(id));
+                    } else {
+                        databaseHelper.updateUser(contentValues, String.valueOf(id));
                         finish();
                     }
 //                editor.commit();
@@ -86,8 +95,39 @@ public class RegisterActivity extends AppCompatActivity {
                 }
             }
         });
+        imageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                startActivityForResult(intent, 1);
+            }
+        });
+
+
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == 1 && resultCode == RESULT_OK) {
+            bitmap = (Bitmap) data.getExtras().get("data");
+            imageView.setImageBitmap(bitmap);
+        }
+    }
+
+    Bitmap bitmap;
+
+    public byte[] getbyteArray(Bitmap bitmap) {
+        ByteArrayOutputStream bos = new ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.PNG, 100, bos);
+        byte[] barray = bos.toByteArray();
+        return barray;
+
+    }
+
+    public static Bitmap getBitmap(byte[] array) {
+        return BitmapFactory.decodeByteArray(array, 0, array.length);
+    }
 
     public boolean emailValidation(EditText view) {
         String value = view.getText().toString();
