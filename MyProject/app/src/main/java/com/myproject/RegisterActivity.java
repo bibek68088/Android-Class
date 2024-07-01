@@ -81,7 +81,8 @@ public class RegisterActivity extends AppCompatActivity {
                     contentValues.put("firstname", firstnameValue);
                     contentValues.put("lastname", lastnameValue);
                     contentValues.put("email", email.getText().toString());
-                    contentValues.put("image", getbyteArray(bitmap));
+                    if (bitmap != null)
+                        contentValues.put("image", getbyteArray(bitmap));
                     if (id == 0) {
                         databaseHelper.insertUser(contentValues);
 

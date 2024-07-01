@@ -93,7 +93,12 @@ public class HomeActivity extends AppCompatActivity {
         } else if (id == R.id.submenu1) {
             Toast.makeText(this, "This is submenu 1", Toast.LENGTH_SHORT).show();
             startActivity(new Intent(this, UserListActivity.class));
-        } else if (id == R.id.logout) {
+        }else if (id == R.id.submenu2) {
+            Toast.makeText(this, "This is submenu 2", Toast.LENGTH_SHORT).show();
+            startActivity(new Intent(this, UserListViewActivity.class));
+        }
+
+        else if (id == R.id.logout) {
             getSharedPreferences("Userinfo", 0).edit().putBoolean("rememberme", false).commit();
             startActivity(new Intent(this, LoginActivity.class));
             finish();
